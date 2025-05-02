@@ -4,7 +4,7 @@ import struct
 import time
 
 # --- CONFIGURAZIONE SERIALE ---
-porta_seriale = 'COM6'
+porta_seriale = 'COM3'
 baudrate = 38400
 timeout = 1
 
@@ -29,6 +29,10 @@ def invia_comando(indirizzo, comando, tipo, motore, valore=0):
     except serial.SerialException as e:
         print(f"Errore nell'invio del comando {hex(comando)}:", e)
     time.sleep(0.005)
+
+invia_comando(indirizzo=0x01, comando=0x05, tipo=0x06, motore=0x00, valore=1050)        #corrente motori
+invia_comando(indirizzo=0x01, comando=0x05, tipo=0x06, motore=0x01, valore=1050)
+
 
 # --- COMANDI FRECCE ---
 VELOCITA = 500
