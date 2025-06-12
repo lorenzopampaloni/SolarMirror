@@ -35,7 +35,7 @@ invia_comando(indirizzo=0x01, comando=0x05, tipo=0x06, motore=0x01, valore=1050)
 
 
 # --- COMANDI FRECCE ---
-VELOCITA = 500
+VELOCITA = 200
 
 def muovi(motore, velocita):
     invia_comando(0x01, 0x01, 0x00, motore, velocita)
@@ -62,6 +62,8 @@ def crea_bottone(direzione, riga, colonna, on_press, on_release):
     return btn
 
 # --- CALLBACKS ---
+
+
 def press_up(e):    muovi(1, -VELOCITA)
 def release_up(e):  stop(1)
 

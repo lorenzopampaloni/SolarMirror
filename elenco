@@ -1,0 +1,46 @@
+Parametri fissi (config):
+
+Coordinate specchio (lat, lon, elevazione)
+
+Posizione iniziale (0,0 step)
+
+Gear ratio e steps per grado
+
+Direzione fissa del bersaglio (azimut 229°, distanza 10m, quota -1.5m rispetto allo specchio)
+
+Fuso orario
+
+Orario di attivazione e spegnimento del sistema (parametrizzabile)
+
+Calcolo della posizione attuale del sole:
+
+Usare astral per ottenere azimut ed elevazione solare attuale al timestamp in esecuzione (ogni 5 minuti)
+
+Calcolare l’angolo richiesto per il mirror in azimut e elevazione per mantenere la luce puntata sul bersaglio (posizione obiettivo fissa)
+
+Calcolo della correzione giornaliera:
+
+Leggere da file l’ultima data e posizione (in gradi o steps)
+
+Se è passato più di un giorno (o più giorni), calcolare la correzione di posizione necessaria rispetto a oggi
+
+Calcolare lo spostamento in gradi da applicare
+
+Convertire i gradi in steps usando gear ratio e steps per grado
+
+Applicazione correzione:
+
+Preparare il comando da inviare via seriale per spostare i motori alle nuove posizioni (funzione set_axis_parameter o simile)
+
+Inviare comando o salvarlo per invio esterno
+
+Aggiornamento file:
+
+Salvare data e nuova posizione come riferimento per la prossima esecuzione
+
+Loop o schedulazione:
+
+Il programma viene eseguito ogni 5 minuti da un processo esterno (cron, systemd timer, ecc)
+
+Attiva e disattiva il controllo in base all’orario di inizio e fine giornata parametrizzato
+
