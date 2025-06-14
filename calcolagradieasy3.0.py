@@ -13,8 +13,10 @@ LAT = 43.765833
 LON = 11.220556
 ELEVATION = 45
 
-GEAR_RATIO = 1 / 8
-STEPS_PER_DEGREE = 6400 / 360
+GEAR_RATIO_AZ = 1 / 40   # esempio: azimut ha riduzione 1:8
+GEAR_RATIO_EL = 1 / 24  # esempio: elevazione ha riduzione 1:30
+STEPS_PER_DEGREE = 12800 / 360  # passi motore per grado senza riduzione
+
 
 TARGET_AZIMUTH = 229
 TARGET_DISTANCE = 10
@@ -69,14 +71,20 @@ def calcola_specchio(azimuth_sun, elevation_sun):
     elevation_mirror = math.degrees(math.asin(normal[2]))
     return azimuth_mirror, elevation_mirror
 
-def angoli_to_steps(angolo):
-    return int(round(angolo * STEPS_PER_DEGREE * GEAR_RATIO))
+def angoli_to_steps(angolo, tipo):
+    if tipo == 'az':
+        return int(round(angolo * STEPS_PER_DEGREE * GEAR_RATIO_AZ))
+    elif tipo == 'el':
+        return int(round(angolo * STEPS_PER_DEGREE * GEAR_RATIO_EL))
+    else:
+        raise ValueError("Tipo di motore non valido: usare 'az' o 'el'")
+
 
 # === MAIN LOOP ===
 def main_loop():
     # Setup iniziale motori (solo alla prima esecuzione)
-    invia_comando(0x01, 0x05, 0x00, 140, 5)
-    invia_comando(0x01, 0x05, 0x00, 141, 5)
+    invia_comando(0x01, 0x05, 0x00, 140, 6)
+    invia_comando(0x01, 0x05, 0x00, 141, 6)
     invia_comando(0x01, 0x05, 0x06, 0x00, 1050)
     invia_comando(0x01, 0x05, 0x06, 0x01, 1050)
 
@@ -86,7 +94,7 @@ def main_loop():
     step_el_prec = 0
 
     n = 1
-    intervallo_in_secondi = 140
+    intervallo_in_secondi = 60
 
     print(f"Lo script si avvierà e ripeterà ogni {intervallo_in_secondi} secondi.")
     print("Premi Ctrl+C o 'q' per fermarlo.")
@@ -99,8 +107,9 @@ def main_loop():
             az_mirror, el_mirror = calcola_specchio(az_sun, el_sun)
             print(f"Specchio - Azimuth: {az_mirror:.2f}°, Elevation: {el_mirror:.2f}°")
 
-            step_az = angoli_to_steps(az_mirror)
-            step_el = angoli_to_steps(el_mirror)
+            step_az = angoli_to_steps(az_mirror, 'az')
+            step_el = angoli_to_steps(el_mirror, 'el')
+
 
             if prima_volta:
                 # Solo registra la posizione
